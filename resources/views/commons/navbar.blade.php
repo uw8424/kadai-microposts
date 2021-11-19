@@ -8,7 +8,10 @@
             
         <div class="collapse navbar-collapse" id="nav-bar">
             <ul class="navbar-nav mr-auto"></ul>
-            <ul class="navbar-nav"></ul>
+            <ul class="navbar-nav">
+                {{-- ユーザー登録画面へのリンク --}}
+                <li>{{!! link_to_route("signup.get", "Signup", [], ["class" => "nav-link"]) !!}</li>
+            </ul>
             
                 <li class="nav-item"><a href="#" class="nav-link">Signup</a></li>
                 
