@@ -7,7 +7,6 @@
            @include("users.card")
         </aside>
         <div class="col-sm-8">
-            <ul class="nav nav-tabs nav-justified mb-3">
                 {{--タブ --}}
                 @include("users.navtabs")
                     @if (Auth::id() == $user->id)
