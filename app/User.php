@@ -43,9 +43,62 @@ class User extends Authenticatable
         return $this->hasMany(Micropost::class);
     }
     
+    //このユーザーに関係するモデルの件数をロードする。
     public function loadrelationshipCounts()
     {
-        $this->loadCount("microposts");
+        $this->loadCount(["microposts", "followings", "followers"]);
+    }
+    
+    //このユーザーがフォロー中のユーザー（Userモデルとの関係を定義）
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, "user_follow", "user_id", "follow_id")->withTimestamps();
+    }
+    
+    //このユーザーをフォロー中のユーザー（Userモデルとの関係を定義）
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, "user_follow", "follow_id", "user_id")->withTimestamps();
+    }
+    
+    public function follow($userId)
+    {
+        //既にフォローしているかの確認
+        $exist = $this->is_following($userId);
+        //対象が自分自身かどうかの確認
+        $its_me = $this->id == $userId;
+        
+        if ($exist || $its_me) {
+            //既にフォローしていれば何もしない
+            return false;
+        } else {
+            //未フォローであればフォローする
+            $this->followings()->attach($userId);
+            return true;
+        }
+    }
+    
+    public function unfollow($userId)
+    {
+        //既にフォローされているかの確認
+        $exist = $this->is_following($userId);
+        //対象が自分自身かどうかの確認
+        $its_me = $this->id == userId;
+        
+        if($exist && !$its_me) {
+            //既にフォローしていればフォローを外す。
+            $this->followings()->detach($userId);
+            return true;
+        } else {
+            //未フォローであれば何もしない。
+            return false;
+        }
+    }
+    
+    public function is_following($userId)
+    {
+        //フォロー中ユーザの中に$userIdのものが存在するか
+        return $this->followings()->where("follow_id", $userId)->exists();
     }
     
 }
