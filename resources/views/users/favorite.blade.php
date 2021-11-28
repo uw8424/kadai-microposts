@@ -29,7 +29,8 @@
                     </div>
                 </div>
             </li>
-        @endforeach    
+        @endforeach
+        
     </ul>
     {{-- ページネーションのリンク --}}
     {{ $microposts->links() }}
